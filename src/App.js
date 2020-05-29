@@ -62,6 +62,7 @@ class App extends Component {
 	}
 
 	render() {
+	  const numDragons = this.state.multi ? "dragons" : "dragon";
 	  return (
 	    <div className="App">
 	    	{!this.state.isRefreshing && 
@@ -81,7 +82,7 @@ class App extends Component {
 	    	</Row>
 	    	<Row style={{marginTop: '1rem'}}>
 	    		<Col xs>
-	    		<h3>put your dragon here</h3>
+	    		<h3>{"put your " + numDragons + " here"}</h3>
 	    		</Col>
 	    	</Row>
 	    	{!this.state.multi && <Row>
