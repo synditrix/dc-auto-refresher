@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 import 'antd/dist/antd.css';
-import { DownOutlined } from '@ant-design/icons';
 import { Input, Row, Col, Menu, Select, Switch, Button, Layout, Typography } from 'antd';
 
 import Dragon from './Dragon';
@@ -10,6 +9,7 @@ const { Search } = Input;
 const { Option } = Select;
 const { Header, Footer, Sider, Content } = Layout;
 const { Text } = Typography;
+const { TextArea } = Input;
 
 class App extends Component {
 
@@ -18,6 +18,8 @@ class App extends Component {
 		this.setRefreshState = this.setRefreshState.bind(this);
 		this.onClickSpeed = this.onClickSpeed.bind(this);
 		this.handleChange = this.handleChange.bind(this);
+		this.handleTextAreaChange = this.handleTextAreaChange.bind(this);
+		this.handleSingleCodeChange = this.handleSingleCodeChange.bind(this);
 		this.switchMulti = this.switchMulti.bind(this);
 		this.state = {
 			code: sessionStorage.getItem('code') || '',
@@ -57,6 +59,14 @@ class App extends Component {
 		this.setState({codes: stringvalue});
 	};
 
+	handleTextAreaChange(e) {
+		this.setState({codes: e.target.value});
+	};
+
+	handleSingleCodeChange(e) {
+		this.setState({code: e.target.value})
+	}
+
 	switchMulti(checked) {
   		this.setState({multi: checked});
 	}
@@ -87,15 +97,13 @@ class App extends Component {
 	    	</Row>
 	    	{!this.state.multi && <Row>
 		    	<Col xs>
-					<Search
+					<Input
 					  placeholder="input dragon code"
-					  enterButton="submit"
 					  size="large"
-					  onSearch={
-					  	value => {
-					  		this.setRefreshState(true, value, this.state.speed, this.state.codes, false);
-					  		window.location.reload();
-					  	}
+					  onChange={
+			    		value => {
+	    					this.handleSingleCodeChange(value)
+	    				}
 					  }
 					/>
 				</Col>
@@ -103,22 +111,28 @@ class App extends Component {
 			{this.state.multi && <Row> 
 	    	 <Select size="large" mode="tags" style={{ width: '30%' }} placeholder="input multiple codes" onChange={this.handleChange}>
 			 </Select>
-			 <Button 
-			 	type="primary" 
-			 	size="large" 
-			 	onClick={
-			 		() => {
-			 			this.setRefreshState(true, "", this.state.speed, this.state.codes, true);
-			 			window.location.reload();
-			 		}
-			 	}>submit</Button>
+	    	</Row>}
+	    	{this.state.multi && <Row style={{marginTop: '1rem'}}>
+	    		<Col xs>
+	    		<h3>{"or here, separated by commas"}</h3>
+	    		</Col>
+	    	</Row>}
+	    	{this.state.multi && <Row>
+	    		<TextArea 
+	    			rows={4} 
+	    			onChange={
+	    				value => {
+	    					this.handleTextAreaChange(value)
+	    				}
+	    			}
+	    		/>
 	    	</Row>}
 			<Row style={{marginTop: '1rem'}}> 
 	    		<h3>select refresh speed</h3>
 	    	</Row>
-	    	<Row style={{marginBottom: '10rem'}}> 
+	    	<Row> 
 	    		<Col sm>
-					<Select size="large" defaultValue={this.state.speed + "ms"} onChange={this.onClickSpeed}>
+					<Select size="large" style={{ width: 120 }} defaultValue={this.state.speed + "ms"} onChange={this.onClickSpeed}>
 						<Option key="10">10ms</Option>
 					    <Option key="20">20ms</Option>
 					    <Option key="30">30ms</Option>
@@ -127,8 +141,22 @@ class App extends Component {
 					    <Option key="250">250ms</Option>
 					    <Option key="500">500ms</Option>
 					    <Option key="1000">1000ms</Option>
+					   	<Option key="2000">2000ms</Option>
+					   	<Option key="3000">3000ms</Option>
 					</Select>
 				</Col>
+	    	</Row>
+	    	<Row style={{marginTop: '1rem', marginBottom: '10rem'}}> 
+	    		<Button 
+			 	type="primary" 
+			 	size="large" 
+			 	onClick={
+			 		() => {
+			 			const isMulti = this.state.multi ? true : false;
+			 			this.setRefreshState(true, this.state.code, this.state.speed, this.state.codes, isMulti);
+			 			window.location.reload();
+					}
+			}>submit</Button>
 	    	</Row>
 	    	</Content>
 	    	<Footer>
