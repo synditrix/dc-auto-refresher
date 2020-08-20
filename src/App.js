@@ -120,6 +120,8 @@ class App extends Component {
 	    	{this.state.multi && <Row>
 	    		<TextArea 
 	    			rows={4} 
+	    			style={{fontSize:16}} 
+	    			placeholder="by the way, you can input repeats of the same code here if you so wish"
 	    			onChange={
 	    				value => {
 	    					this.handleTextAreaChange(value)

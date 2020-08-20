@@ -5,7 +5,7 @@ import 'antd/dist/antd.css';
 class Dragon extends Component {
 
 	render() {
-		const stringCast = String(this.props.codes).trim();
+    const stringCast = String(this.props.codes).replace(/\s/g,'');
 		const codeArray = String(stringCast).split(',');
 		const isMulti = this.props.multi == "true";
 	 	const codesList = codeArray != [] && codeArray.map(i => {
