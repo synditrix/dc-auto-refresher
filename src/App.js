@@ -3,14 +3,13 @@ import React, { Component } from 'react';
 import 'antd/dist/antd.css';
 import { Input, Row, Col, Menu, Select, Switch, Button, Layout, Typography } from 'antd';
 
-import {CopyToClipboard} from 'react-copy-to-clipboard';
-
 import Dragon from './Dragon';
 
 const { Search } = Input;
 const { Option } = Select;
 const { Header, Footer, Sider, Content } = Layout;
 const { Text } = Typography;
+const { Paragraph } = Typography;
 const { TextArea } = Input;
 
 class App extends Component {
@@ -122,6 +121,9 @@ class App extends Component {
 	render() {
 	  const numDragons = this.state.multi ? "dragons" : "dragon";
 	  var codeString = this.state.code == "" ? this.state.codes : this.state.code;
+	  if (this.state.code !== "" || typeof this.state.codes == 'string') {
+	  	codeString = 'codes/' + codeString;
+	  }
 	  console.log(codeString);
 	  // console.log(this.getFavicon());
 	  // this.favicon = this.getFavicon();
@@ -206,7 +208,7 @@ class App extends Component {
 					</Select>
 				</Col>
 	    	</Row>
-	    	<Row style={{marginTop: '1rem', marginBottom: '10rem'}}> 
+	    	<Row style={{marginTop: '1rem'}}> 
 	    		<Button 
 			 	type="primary" 
 			 	size="large" 
@@ -226,8 +228,13 @@ class App extends Component {
 					}
 			}>submit</Button>
 	    	</Row>
+	    	<Row style={{marginTop: '2rem'}}>
+	    	<Text>tap the blue icon beside the url to share the link below</Text>
+	    	</Row>
 	    	<Row>
-	    		<h3>{'dc-auto-refresher.herokuapp.com/codes/' + String(codeString).replace(/\s/g,'')}</h3>
+	    	<Paragraph copyable style={{fontSize: 'large', color:'dodgerblue', marginBottom: '10rem'}}>
+	    		{'dc-auto-refresher.herokuapp.com/' + String(codeString).replace(/\s/g,'')}
+	    	</Paragraph>
 	    	</Row>
 	    	</Content>
 	    	<Footer>
