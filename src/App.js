@@ -25,11 +25,23 @@ class App extends Component {
 		this.state = {
 			code: sessionStorage.getItem('code') || '',
 			isRefreshing: sessionStorage.getItem('isRefreshing') || false,
-			speed: sessionStorage.getItem('speed') || 250, 
+			speed: sessionStorage.getItem('speed') || 500, 
 			codes: JSON.parse(sessionStorage.getItem('codes')) || [],
 			multi: sessionStorage.getItem('multi') || false,
 			favicon: sessionStorage.getItem('favicon') || ''
 		}
+		var currentUrl = window.location.href;
+	  	var currentCode = currentUrl.split("codes/")[1]; 
+	  	console.log(currentCode);
+	  	if (currentCode) {
+	  	if(currentCode.length > 5) {
+	  		this.state.multi = true;
+	  		this.state.codes = currentCode;
+	  	}
+	  	else {
+	  		this.state.code = currentCode;
+	  	}
+	  }
 	};
 
 	componentDidMount() {
@@ -115,7 +127,7 @@ class App extends Component {
 	    		<h3>toggle multi-entry mode</h3>
 	    	</Row>
 	    	<Row>
-	    		<Switch onChange={this.switchMulti} />
+	    		<Switch defaultChecked={this.state.multi} onChange={this.switchMulti} />
 	    	</Row>
 	    	<Row style={{marginTop: '1rem'}}>
 	    		<Col xs>
@@ -127,6 +139,7 @@ class App extends Component {
 					<Input
 					  placeholder="input dragon code"
 					  size="large"
+					  defaultValue={this.state.code}
 					  onChange={
 			    		value => {
 	    					this.handleSingleCodeChange(value)
@@ -149,6 +162,7 @@ class App extends Component {
 	    		<TextArea 
 	    			rows={4} 
 	    			style={{fontSize:16}} 
+	    			defaultValue={this.state.codes}
 	    			placeholder="by the way, you can input repeats of the same code here if you so wish"
 	    			onChange={
 	    				value => {

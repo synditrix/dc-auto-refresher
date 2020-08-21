@@ -7,7 +7,7 @@ class Dragon extends Component {
 	render() {
     const stringCast = String(this.props.codes).replace(/\s/g,'');
 		const codeArray = String(stringCast).split(',');
-		const isMulti = this.props.multi == "true";
+		const isMulti = this.props.multi !== "false";
 	 	const codesList = codeArray != [] && codeArray.map(i => {
 		  	return (
 		  		<div className="Dragons">
