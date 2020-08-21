@@ -203,7 +203,7 @@ class App extends Component {
 			 			const isMulti = this.state.multi ? true : false;
 			 			const firstCode = isMulti ? this.state.codes.split(',')[0] : this.state.code;
 			 			const faviconUrl = "http://dragcave.net/image/" + firstCode + ".gif";
-			 			var url = window.location.href + codeString;
+			 			var url = window.location.href.split("codes/")[0] + codeString;
 			 			this.setRefreshState(true, this.state.code, this.state.speed, this.state.codes, isMulti, faviconUrl, url);
 			 			window.location.reload();
 					}
