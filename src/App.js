@@ -203,7 +203,7 @@ class App extends Component {
 			 			const isMulti = this.state.multi ? true : false;
 			 			const firstCode = isMulti ? this.state.codes.split(',')[0] : this.state.code;
 			 			const faviconUrl = "http://dragcave.net/image/" + firstCode + ".gif";
-			 			var url = 'http://dc-auto-refresher.herokuapp.com/';
+			 			var url = 'https://dc-auto-refresher.herokuapp.com/';
 			 			if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
 			 				url = 'http://localhost:3000/';
 			 			}
