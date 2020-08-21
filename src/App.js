@@ -214,7 +214,7 @@ class App extends Component {
 	    	</Row>
 	    	<Row>
 	    	<Paragraph copyable style={{fontSize: 'large', color:'dodgerblue', marginBottom: '10rem'}}>
-	    		{'https://dc-auto-refresher.herokuapp.com/' + String(codeString).replace(/\s/g,'')}
+	    		{'http://dc-auto-refresher.herokuapp.com/' + String(codeString).replace(/\s/g,'')}
 	    	</Paragraph>
 	    	</Row>
 	    	</Content>
