@@ -21,12 +21,14 @@ class App extends Component {
 		this.handleTextAreaChange = this.handleTextAreaChange.bind(this);
 		this.handleSingleCodeChange = this.handleSingleCodeChange.bind(this);
 		this.switchMulti = this.switchMulti.bind(this);
+		this.changeFavicon = this.changeFavicon.bind(this);
 		this.state = {
 			code: sessionStorage.getItem('code') || '',
 			isRefreshing: sessionStorage.getItem('isRefreshing') || false,
 			speed: sessionStorage.getItem('speed') || 250, 
 			codes: JSON.parse(sessionStorage.getItem('codes')) || [],
-			multi: sessionStorage.getItem('multi') || false
+			multi: sessionStorage.getItem('multi') || false,
+			favicon: sessionStorage.getItem('favicon') || ''
 		}
 	};
 
@@ -34,20 +36,25 @@ class App extends Component {
 		const truthy = this.state.isRefreshing == "true";
 	 	if (truthy) {
  	 		setInterval(() => window.location.reload(), this.state.speed);
+ 	 		// this.changeFavicon('http://dragcave.net/image/N8cb9.gif');
+ 	 		// this.changeFavicon('https://www.google.com/favicon.ico');
+ 	 		this.changeFavicon(this.state.favicon);
  		}
 	}
 
-	setRefreshState(option, code, speed, codes, multi) {
+	setRefreshState(option, code, speed, codes, multi, favicon) {
 	    sessionStorage.setItem('isRefreshing', option);
 	    sessionStorage.setItem('code', code);
 	    sessionStorage.setItem('speed', speed);
 	    sessionStorage.setItem('codes', JSON.stringify(codes));
 	    sessionStorage.setItem('multi', multi);
+	    sessionStorage.setItem('favicon', favicon);
 	    this.setState({isRefreshing: option });
 	   	this.setState({code: code });
 	   	this.setState({speed: speed});
 	   	this.setState({codes: codes });
 	   	this.setState({multi: multi });
+	   	this.setState({favicon: favicon});
 	};
 
 	onClickSpeed = (key) => {
@@ -71,8 +78,28 @@ class App extends Component {
   		this.setState({multi: checked});
 	}
 
+	changeFavicon(src) {
+	console.log("enter");
+	 var link = document.createElement('link'),
+	     oldLink = document.getElementById('default-icon');
+	 link.id = 'dynamic-favicon';
+	 link.rel = 'icon';
+	 link.href = src;
+	 if (oldLink) {
+	 	console.log("oldlink");
+	  document.head.removeChild(oldLink);
+	 }
+	 document.head.appendChild(link);
+	 console.log("afteroldlink");
+	}
+
 	render() {
 	  const numDragons = this.state.multi ? "dragons" : "dragon";
+	  // console.log(this.getFavicon());
+	  // this.favicon = this.getFavicon();
+	  // this.favicon = document.getElementById("favicon");
+	  // this.favicon.href = "https://dragcave.net/image/sdEFt";
+
 	  return (
 	    <div className="App">
 	    	{!this.state.isRefreshing && 
@@ -103,6 +130,7 @@ class App extends Component {
 					  onChange={
 			    		value => {
 	    					this.handleSingleCodeChange(value)
+	    					this.changeFavicon('http://dragcave.net/image/N8cb9.gif');
 	    				}
 					  }
 					/>
@@ -155,7 +183,10 @@ class App extends Component {
 			 	onClick={
 			 		() => {
 			 			const isMulti = this.state.multi ? true : false;
-			 			this.setRefreshState(true, this.state.code, this.state.speed, this.state.codes, isMulti);
+			 			// const favicon = this.getFavicon();
+			 			const firstCode = isMulti ? this.state.codes.split(',')[0] : this.state.code;
+			 			const faviconUrl = "http://dragcave.net/image/" + firstCode + ".gif"
+			 			this.setRefreshState(true, this.state.code, this.state.speed, this.state.codes, isMulti, faviconUrl);
 			 			window.location.reload();
 					}
 			}>submit</Button>
