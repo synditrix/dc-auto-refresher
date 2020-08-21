@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import 'antd/dist/antd.css';
 import { Input, Row, Col, Menu, Select, Switch, Button, Layout, Typography } from 'antd';
 
+import {CopyToClipboard} from 'react-copy-to-clipboard';
+
 import Dragon from './Dragon';
 
 const { Search } = Input;
@@ -28,20 +30,23 @@ class App extends Component {
 			speed: sessionStorage.getItem('speed') || 500, 
 			codes: JSON.parse(sessionStorage.getItem('codes')) || [],
 			multi: sessionStorage.getItem('multi') || false,
-			favicon: sessionStorage.getItem('favicon') || ''
+			favicon: sessionStorage.getItem('favicon') || '',
+			// url: sessionStorage.getItem('url') || window.location.href
 		}
-		var currentUrl = window.location.href;
-	  	var currentCode = currentUrl.split("codes/")[1]; 
-	  	console.log(currentCode);
-	  	if (currentCode) {
-	  	if(currentCode.length > 5) {
-	  		this.state.multi = true;
-	  		this.state.codes = currentCode;
-	  	}
-	  	else {
-	  		this.state.code = currentCode;
-	  	}
-	  }
+			if (!this.state.isRefreshing) {
+			var currentUrl = window.location.href;
+		  	var currentCode = currentUrl.split("codes/")[1]; 
+		  	console.log(currentCode);
+		  	if (currentCode) {
+			  	if(currentCode.length > 5) {
+			  		this.state.multi = true;
+			  		this.state.codes = currentCode;
+			  	}
+			  	else {
+			  		this.state.code = currentCode;
+			  	}
+		  }
+		}
 	};
 
 	componentDidMount() {
@@ -54,19 +59,22 @@ class App extends Component {
  		}
 	}
 
-	setRefreshState(option, code, speed, codes, multi, favicon) {
+	setRefreshState(option, code, speed, codes, multi, favicon, url) {
 	    sessionStorage.setItem('isRefreshing', option);
 	    sessionStorage.setItem('code', code);
 	    sessionStorage.setItem('speed', speed);
 	    sessionStorage.setItem('codes', JSON.stringify(codes));
 	    sessionStorage.setItem('multi', multi);
 	    sessionStorage.setItem('favicon', favicon);
+	    // sessionStorage.setItem('url', url);
 	    this.setState({isRefreshing: option });
 	   	this.setState({code: code });
 	   	this.setState({speed: speed});
 	   	this.setState({codes: codes });
 	   	this.setState({multi: multi });
 	   	this.setState({favicon: favicon});
+	   	// this.setState({url: url });
+	   	window.history.pushState(null, 'refresh', url);
 	};
 
 	onClickSpeed = (key) => {
@@ -87,6 +95,12 @@ class App extends Component {
 	}
 
 	switchMulti(checked) {
+  		if (this.state.multi == false) {
+  			this.setState({code: ''});
+  		}
+  		else {
+  			this.setState({codes: []});
+  		}
   		this.setState({multi: checked});
 	}
 
@@ -107,6 +121,8 @@ class App extends Component {
 
 	render() {
 	  const numDragons = this.state.multi ? "dragons" : "dragon";
+	  var codeString = this.state.code == "" ? this.state.codes : this.state.code;
+	  console.log(codeString);
 	  // console.log(this.getFavicon());
 	  // this.favicon = this.getFavicon();
 	  // this.favicon = document.getElementById("favicon");
@@ -140,10 +156,10 @@ class App extends Component {
 					  placeholder="input dragon code"
 					  size="large"
 					  defaultValue={this.state.code}
+					  maxLength={5}
 					  onChange={
 			    		value => {
 	    					this.handleSingleCodeChange(value)
-	    					this.changeFavicon('http://dragcave.net/image/N8cb9.gif');
 	    				}
 					  }
 					/>
@@ -199,11 +215,19 @@ class App extends Component {
 			 			const isMulti = this.state.multi ? true : false;
 			 			// const favicon = this.getFavicon();
 			 			const firstCode = isMulti ? this.state.codes.split(',')[0] : this.state.code;
-			 			const faviconUrl = "http://dragcave.net/image/" + firstCode + ".gif"
-			 			this.setRefreshState(true, this.state.code, this.state.speed, this.state.codes, isMulti, faviconUrl);
+			 			const faviconUrl = "http://dragcave.net/image/" + firstCode + ".gif";
+			 			var url = 'http://dc-auto-refresher.herokuapp.com/codes/';
+			 			if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+			 				url = 'http://localhost:3000/codes/';
+			 			}
+			 			url += codeString;
+			 			this.setRefreshState(true, this.state.code, this.state.speed, this.state.codes, isMulti, faviconUrl, url);
 			 			window.location.reload();
 					}
 			}>submit</Button>
+	    	</Row>
+	    	<Row>
+	    		<h3>{'dc-auto-refresher.herokuapp.com/codes/' + String(codeString).replace(/\s/g,'')}</h3>
 	    	</Row>
 	    	</Content>
 	    	<Footer>
